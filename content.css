@@ -1,0 +1,96 @@
+/* SnapCut — Selection Overlay Styles */
+
+#_sc_ov {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  cursor: crosshair !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  touch-action: none !important;
+}
+
+#_sc_mask {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,0.5) !important;
+  pointer-events: none !important;
+}
+
+/* Selection box — hidden by default via class, NOT !important display */
+#_sc_box {
+  position: absolute !important;
+  border: 2px solid #7c3aed !important;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.45), 0 0 20px rgba(124,58,237,0.6) !important;
+  pointer-events: none !important;
+  border-radius: 3px !important;
+  transition: none !important;
+}
+
+#_sc_box._sc_hidden {
+  display: none !important;
+}
+
+#_sc_box::after {
+  content: attr(data-sz) !important;
+  position: absolute !important;
+  bottom: -30px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: #7c3aed !important;
+  color: #fff !important;
+  font: 600 11px/1 -apple-system, 'Segoe UI', sans-serif !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+#_sc_box._sc_busy {
+  animation: _sc_pulse 0.7s infinite !important;
+}
+
+@keyframes _sc_pulse {
+  0%, 100% { border-color: #7c3aed; }
+  50%      { border-color: #a78bfa; box-shadow: 0 0 0 9999px rgba(0,0,0,0.45), 0 0 40px rgba(167,139,250,.8); }
+}
+
+#_sc_hint {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: rgba(9,9,18,0.93) !important;
+  border: 1px solid rgba(124,58,237,0.4) !important;
+  border-radius: 14px !important;
+  padding: 20px 32px !important;
+  font: 500 14px/1 -apple-system, 'Segoe UI', sans-serif !important;
+  color: #f0eee8 !important;
+  pointer-events: none !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+  animation: _sc_fadeIn 0.2s ease-out !important;
+}
+
+@keyframes _sc_fadeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+#_sc_hint b {
+  font-size: 28px !important;
+  font-weight: 400 !important;
+}
+
+#_sc_hint kbd {
+  font: 500 11px/1 -apple-system, 'Segoe UI', sans-serif !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  border-radius: 5px !important;
+  padding: 3px 8px !important;
+  color: rgba(255,255,255,0.4) !important;
+}

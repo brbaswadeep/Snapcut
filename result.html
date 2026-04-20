@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SnapCut – Result</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08080f;--s1:rgba(255,255,255,.04);--border:rgba(255,255,255,.07);--purple:#7c3aed;--purple2:#a855f7;--green:#10b981;--text:#f0eee8;--muted:rgba(240,238,232,.4)}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.o1{width:500px;height:500px;top:-200px;left:-120px;background:radial-gradient(circle,rgba(124,58,237,.13),transparent 70%)}
+.o2{width:380px;height:380px;bottom:-150px;right:-80px;background:radial-gradient(circle,rgba(236,72,153,.08),transparent 70%)}
+
+nav{position:relative;z-index:2;width:100%;padding:13px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(8,8,15,.7)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;background:linear-gradient(90deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-box{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,var(--purple),var(--purple2));display:flex;align-items:center;justify-content:center;font-size:13px}
+.nav-r{display:flex;gap:9px;align-items:center}
+.btn{display:flex;align-items:center;gap:5px;padding:8px 16px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s}
+.btn-ghost{background:var(--s1);border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.2);color:var(--text)}
+.btn-dl{background:linear-gradient(135deg,#065f46,var(--green));color:#fff}
+.btn-dl:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,185,129,.3)}
+.btn-dl:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+
+main{flex:1;position:relative;z-index:1;width:100%;max-width:1100px;margin:0 auto;padding:40px 32px 56px}
+.eyebrow{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px}
+.h1{font-weight:800;font-size:clamp(22px,3.5vw,32px);letter-spacing:-1px;background:linear-gradient(135deg,#fff,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:28px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.ph{padding:11px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ph-label{font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted)}
+.badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:.5px}
+.b-src{background:rgba(255,255,255,.06);color:var(--muted)}
+.b-proc{background:rgba(124,58,237,.18);color:#c4b5fd;border:1px solid rgba(124,58,237,.3)}
+.b-done{background:rgba(16,185,129,.12);color:#6ee7b7;border:1px solid rgba(16,185,129,.25)}
+.b-err{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+
+.pb{min-height:280px;display:flex;align-items:center;justify-content:center;padding:14px;position:relative}
+.pb img{max-width:100%;max-height:380px;border-radius:7px;object-fit:contain;display:block}
+
+.checker{
+  background-image:linear-gradient(45deg,#1c1c2e 25%,transparent 25%),linear-gradient(-45deg,#1c1c2e 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1c1c2e 75%),linear-gradient(-45deg,transparent 75%,#1c1c2e 75%);
+  background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;background-color:#141420;
+}
+
+/* Processing */
+.proc{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:20px}
+.spinner{width:46px;height:46px;border:3px solid rgba(124,58,237,.18);border-top-color:var(--purple);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-title{font-weight:700;font-size:14px}
+.proc-sub{font-size:11.5px;color:var(--muted);line-height:1.5}
+.prog-track{width:180px;height:4px;border-radius:20px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:2px}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--purple),var(--purple2));width:0%;transition:width .3s}
+.prog-pct{font-size:10.5px;color:var(--purple2);font-variant-numeric:tabular-nums}
+
+/* Error */
+.err{display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;padding:20px}
+.err-icon{font-size:38px}
+.err-title{font-weight:700;font-size:14px}
+.err-msg{font-size:11.5px;color:var(--muted);line-height:1.5;max-width:240px}
+
+/* BG swatches */
+.bg-row{padding:10px 14px;border-top:1px solid var(--border);display:none;align-items:center;gap:8px;flex-wrap:wrap}
+.bg-label{font-size:11px;color:var(--muted)}
+.sw{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
+.sw:hover{transform:scale(1.2)}
+.sw.on{border-color:var(--purple)}
+.sw-tr{border:2px solid rgba(255,255,255,.15);background-image:linear-gradient(45deg,#2a2a3e 25%,transparent 25%),linear-gradient(-45deg,#2a2a3e 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#2a2a3e 75%),linear-gradient(-45deg,transparent 75%,#2a2a3e 75%);background-size:7px 7px;background-position:0 0,0 3.5px,3.5px -3.5px,-3.5px 0;background-color:#111122}
+
+/* Stats */
+.stats{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.stat{flex:1;min-width:120px;padding:11px 14px;border-radius:11px;background:var(--s1);border:1px solid var(--border)}
+.stat-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.stat-val{font-family:monospace;font-size:13px;color:var(--text)}
+
+.info{margin-top:12px;padding:10px 14px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:9px;display:flex;align-items:center;gap:9px}
+.info span{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+.info strong{color:#c4b5fd;font-weight:600}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+
+<nav>
+  <div class="logo"><div class="logo-box">✂️</div>SnapCut</div>
+  <div class="nav-r">
+    <button class="btn btn-ghost" onclick="window.close()">⬚ New Capture</button>
+    <button class="btn btn-dl" id="dlBtn" disabled>⬇ Download PNG</button>
+  </div>
+</nav>
+
+<main>
+  <div class="eyebrow">Powered by remove.bg</div>
+  <div class="h1">Background Removal</div>
+
+  <div class="grid">
+    <!-- Original -->
+    <div class="panel">
+      <div class="ph"><span class="ph-label">Original</span><span class="badge b-src">SOURCE</span></div>
+      <div class="pb" id="origPanel">
+        <div class="proc"><div class="spinner"></div><div class="proc-title">Loading…</div></div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="panel">
+      <div class="ph"><span class="ph-label">Result</span><span class="badge b-proc" id="resBadge">PROCESSING</span></div>
+      <div class="pb checker" id="resPanel">
+        <div class="proc" id="procUI">
+          <div class="spinner"></div>
+          <div class="proc-title" id="procTitle">Starting…</div>
+          <div class="proc-sub" id="procSub">Connecting to API</div>
+          <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+          <div class="prog-pct" id="progPct">0%</div>
+        </div>
+      </div>
+      <div class="bg-row" id="bgRow">
+        <span class="bg-label">BG:</span>
+        <div class="sw sw-tr on"  data-bg="transparent"></div>
+        <div class="sw" style="background:#fff"    data-bg="#ffffff"></div>
+        <div class="sw" style="background:#111"    data-bg="#111111"></div>
+        <div class="sw" style="background:#7c3aed" data-bg="#7c3aed"></div>
+        <div class="sw" style="background:#0ea5e9" data-bg="#0ea5e9"></div>
+        <div class="sw" style="background:#10b981" data-bg="#10b981"></div>
+        <div class="sw" style="background:#f59e0b" data-bg="#f59e0b"></div>
+        <div class="sw" style="background:#ef4444" data-bg="#ef4444"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats" id="statsRow" style="display:none">
+    <div class="stat"><div class="stat-lbl">Original</div><div class="stat-val" id="stOrig">—</div></div>
+    <div class="stat"><div class="stat-lbl">Output</div><div class="stat-val" id="stOut">—</div></div>
+    <div class="stat"><div class="stat-lbl">Time</div><div class="stat-val" id="stTime">—</div></div>
+    <div class="stat"><div class="stat-lbl">Status</div><div class="stat-val" id="stStatus">—</div></div>
+  </div>
+
+  <div class="info">
+    <span>🧠</span>
+    <span>Powered by <strong>remove.bg API</strong> — fast, perfect cutouts.</span>
+  </div>
+</main>
+
+<script src="env.js"></script>
+<script src="result.js"></script>
+</body>
+</html>
